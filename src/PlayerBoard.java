@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class PlayerBoard extends JFrame{
     private int gridWidth;
@@ -17,10 +18,7 @@ public class PlayerBoard extends JFrame{
     private int mines;
     private final int buttonWidth = 30;
     private final int buttonHeight = 30;
-    private final String titleText = "Saper, ale w niektórych krajach mówią na to Minesweeper!";
-    private MainMenu mainMenu;
     private JPanel gamePanel;
-    private JPanel informationPanel;
     private JLabel flagsLeftLabel;
 
     public PlayerBoard(int width, int height, int mines, int difficultyLevel){
@@ -29,7 +27,7 @@ public class PlayerBoard extends JFrame{
     }
 
     protected void setupMainMenu(int difficultyLevel){
-        mainMenu = new MainMenu(this);
+        MainMenu mainMenu = new MainMenu(this);
         setJMenuBar(mainMenu);
         mainMenu.switchDifficultyFor(difficultyLevel);
     }
@@ -46,7 +44,7 @@ public class PlayerBoard extends JFrame{
         setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
         setupInformationPanel();
         setupGamePanel();
-        setTitle(titleText);
+        setTitle("Saper, ale w niektórych krajach mówią na to Minesweeper!");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         pack();
@@ -55,7 +53,7 @@ public class PlayerBoard extends JFrame{
     }
 
     private void setupInformationPanel() {
-        informationPanel = new JPanel();
+        JPanel informationPanel = new JPanel();
         informationPanel.setSize(getGridWidth()*buttonWidth, buttonHeight);
         informationPanel.setBackground(new Color(195,195,195));
         informationPanel.add(new JLabel("Flags Left:"));
@@ -97,7 +95,7 @@ public class PlayerBoard extends JFrame{
     private void createAndAddNewButton() throws IOException{
         GameField gameField = new GameField();
         gameField.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
-        gameField.setIcon(new ImageIcon(ImageIO.read(new File(getImagePath(RealBoard.UNCOVERED_FIELD))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH)));
+        gameField.setIcon(new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.UNCOVERED_FIELD)))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH)));
         gameField.addMouseListener(new MouseInputAdapter(){
             boolean leftButtonPressed;
             boolean rightButtonPressed;
@@ -112,24 +110,21 @@ public class PlayerBoard extends JFrame{
             @Override
             public void mouseReleased(MouseEvent e){
                 super.mouseReleased(e);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(!leftButtonPressed &&!rightButtonPressed)return;
-                        GameField source = (GameField) (e.getSource());
-                        int x = source.getLocation().x / source.getBounds().width;
-                        int y = source.getLocation().y / source.getBounds().height;
+                new Thread(() -> {
+                    if(!leftButtonPressed &&!rightButtonPressed)return;
+                    GameField source = (GameField) (e.getSource());
+                    int x = source.getLocation().x / source.getBounds().width;
+                    int y = source.getLocation().y / source.getBounds().height;
 
-                        if(SwingUtilities.isLeftMouseButton(e)&&!SwingUtilities.isRightMouseButton(e))
-                            leftMouseButtonPressed(source, x, y);
-                        if(SwingUtilities.isLeftMouseButton(e)&&SwingUtilities.isRightMouseButton(e))
-                            bothMouseButtonsPressed(source, x, y);
-                        if(!SwingUtilities.isLeftMouseButton(e)&&SwingUtilities.isRightMouseButton(e))
-                            rightMouseButtonPressed(source, x, y);
+                    if(SwingUtilities.isLeftMouseButton(e)&&!SwingUtilities.isRightMouseButton(e))
+                        leftMouseButtonPressed(source, x, y);
+                    if(SwingUtilities.isLeftMouseButton(e)&&SwingUtilities.isRightMouseButton(e))
+                        bothMouseButtonsPressed(x, y);
+                    if(!SwingUtilities.isLeftMouseButton(e)&&SwingUtilities.isRightMouseButton(e))
+                        rightMouseButtonPressed(source, x, y);
 
-                        leftButtonPressed =false;
-                        rightButtonPressed =false;
-                    }
+                    leftButtonPressed =false;
+                    rightButtonPressed =false;
                 }).start();
 
             }
@@ -147,7 +142,7 @@ public class PlayerBoard extends JFrame{
         revealEmptyFields(x, y);
     }
 
-    private void bothMouseButtonsPressed(GameField source, int x, int y) {
+    private void bothMouseButtonsPressed(int x, int y) {
         revealSafeMineProximity(x, y);
     }
 
@@ -220,7 +215,7 @@ public class PlayerBoard extends JFrame{
 
     private Icon getCorrespondingIcon(int x, int y){
         try {
-            return new ImageIcon(ImageIO.read(new File(getImagePath(realBoard.discoverField(x, y)))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
+            return new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(realBoard.discoverField(x, y))))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
         }catch(IOException ioe){
             return null;
         }
@@ -255,10 +250,6 @@ public class PlayerBoard extends JFrame{
             default:
                 return null;
         }
-    }
-
-    public int[][] getBoard() {
-        return board;
     }
 
     public GameField getButtonFromGrid(int x, int y) {

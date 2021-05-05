@@ -1,6 +1,4 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainMenu extends JMenuBar {
     final static int BEGINNER = 0;
@@ -68,56 +66,31 @@ public class MainMenu extends JMenuBar {
 
     private void addNewGameMenuItem(){
         newGameMenuItem = new JMenuItem("Nowa gra");
-        newGameMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchDifficultyFor(curretnDifficulty);
-            }
-        });
+        newGameMenuItem.addActionListener(e -> switchDifficultyFor(curretnDifficulty));
         gameMenu.add(newGameMenuItem);
     }
 
     private void addBeginnerLevelMenuItem(){
         beginnerLevelMenuItem = new JRadioButtonMenuItem("Początkujący");
-        beginnerLevelMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchDifficultyFor(MainMenu.BEGINNER);
-            }
-        });
+        beginnerLevelMenuItem.addActionListener(e -> switchDifficultyFor(MainMenu.BEGINNER));
         gameMenu.add(beginnerLevelMenuItem);
     }
 
     private void addIntermediateLevelMenuItem(){
         intermediateLevelMenuItem = new JRadioButtonMenuItem("Zaawansowany");
-        intermediateLevelMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchDifficultyFor(MainMenu.INTERMEDIATE);
-            }
-        });
+        intermediateLevelMenuItem.addActionListener(e -> switchDifficultyFor(MainMenu.INTERMEDIATE));
         gameMenu.add(intermediateLevelMenuItem);
     }
 
     private void addExpertLevelMenuItem(){
         expertLevelMenuItem = new JRadioButtonMenuItem("Ekspert");
-        expertLevelMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchDifficultyFor(MainMenu.EXPERT);
-            }
-        });
+        expertLevelMenuItem.addActionListener(e -> switchDifficultyFor(MainMenu.EXPERT));
         gameMenu.add(expertLevelMenuItem);
     }
 
     private void addExitGameMenuItem(){
         exitGameMenuItem = new JMenuItem("Wyjdź z gry");
-        exitGameMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        exitGameMenuItem.addActionListener(e -> System.exit(0));
         gameMenu.add(exitGameMenuItem);
     }
 }
