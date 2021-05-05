@@ -20,6 +20,8 @@ public class PlayerBoard extends JFrame{
     private final String titleText = "Saper, ale w niektórych krajach mówią na to Minesweeper!";
     private MainMenu mainMenu;
     private JPanel gamePanel;
+    private JPanel informationPanel;
+    private JLabel flagsLeftLabel;
 
     public PlayerBoard(int width, int height, int mines, int difficultyLevel){
         setupProperties(height, width, mines);
@@ -41,6 +43,33 @@ public class PlayerBoard extends JFrame{
     }
 
     protected void setupFrame(){
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
+        setupInformationPanel();
+        setupGamePanel();
+        setTitle(titleText);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private void setupInformationPanel() {
+        informationPanel = new JPanel();
+        informationPanel.setSize(getGridWidth()*buttonWidth, buttonHeight);
+        informationPanel.setBackground(new Color(195,195,195));
+        informationPanel.add(new JLabel("Flags Left:"));
+        flagsLeftLabel = new JLabel();
+        updateFlagsLeftLabel();
+        informationPanel.add(flagsLeftLabel);
+        add(informationPanel, BorderLayout.NORTH);
+    }
+
+    private void updateFlagsLeftLabel() {
+        flagsLeftLabel.setText(Integer.toString(realBoard.getFlagsLeft()));
+    }
+
+    private void setupGamePanel() {
         gamePanel = new JPanel();
         gamePanel.setSize(getGridWidth()*buttonWidth, getGridHeight()*buttonHeight);
         gamePanel.setLayout(new GridLayout(getGridWidth(), getGridHeight()));
@@ -49,13 +78,7 @@ public class PlayerBoard extends JFrame{
         }catch (IOException ioe){
             ioe.printStackTrace();
         }
-        add(gamePanel);
-        setTitle(titleText);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        add(gamePanel, BorderLayout.CENTER);
     }
 
     public int getMines() {
@@ -132,6 +155,7 @@ public class PlayerBoard extends JFrame{
         if (source.isRevealed()) return;
         source.setFlagPlaced(source.isFlagPlaced());
         realBoard.changeFlagState(x, y);
+        updateFlagsLeftLabel();
     }
 
     private void revealSafeMineProximity(int x, int y) {
