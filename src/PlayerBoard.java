@@ -19,6 +19,7 @@ public class PlayerBoard extends JFrame{
     private final int buttonHeight = 30;
     private final String titleText = "Saper, ale w niektórych krajach mówią na to Minesweeper!";
     private MainMenu mainMenu;
+    private JPanel gamePanel;
 
     public PlayerBoard(int width, int height, int mines, int difficultyLevel){
         setupProperties(height, width, mines);
@@ -40,12 +41,15 @@ public class PlayerBoard extends JFrame{
     }
 
     protected void setupFrame(){
-        setLayout(new GridLayout(getGridWidth(), getGridHeight()));
+        gamePanel = new JPanel();
+        gamePanel.setSize(getGridWidth()*buttonWidth, getGridHeight()*buttonHeight);
+        gamePanel.setLayout(new GridLayout(getGridWidth(), getGridHeight()));
         try{
             fillLayoutWithButtons();
         }catch (IOException ioe){
             ioe.printStackTrace();
         }
+        add(gamePanel);
         setTitle(titleText);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -107,7 +111,7 @@ public class PlayerBoard extends JFrame{
 
             }
         });
-        add(gameField);
+        gamePanel.add(gameField);
     }
 
     private void leftMouseButtonPressed(GameField source, int x, int y) {
@@ -234,7 +238,7 @@ public class PlayerBoard extends JFrame{
     }
 
     public GameField getButtonFromGrid(int x, int y) {
-        return (xIndexInbounds(x) && yIndexInbounds(y)) ? (GameField) getContentPane().getComponent(y * getGridHeight() + x) : null;
+        return (xIndexInbounds(x) && yIndexInbounds(y)) ? (GameField) gamePanel.getComponent(y * getGridHeight() + x) : null;
     }
 
     public void setBoard(int[][] board) {
@@ -263,7 +267,7 @@ public class PlayerBoard extends JFrame{
     }
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args){
         new PlayerBoard(MainMenu.difficulties[MainMenu.INTERMEDIATE][0],
                 MainMenu.difficulties[MainMenu.INTERMEDIATE][1],
                 MainMenu.difficulties[MainMenu.INTERMEDIATE][2],
