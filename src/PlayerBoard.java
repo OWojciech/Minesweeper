@@ -22,8 +22,11 @@ public class PlayerBoard extends JFrame{
     private JLabel flagsLeftLabel;
 
     public PlayerBoard(int width, int height, int mines, int difficultyLevel){
+        double start = System.currentTimeMillis();
         setupProperties(height, width, mines);
         setupMainMenu(difficultyLevel);
+        double stop = System.currentTimeMillis();
+        System.out.println("Initialisation took "+ ((stop-start)/1000) +" seconds.");
     }
 
     protected void setupMainMenu(int difficultyLevel){
@@ -88,14 +91,14 @@ public class PlayerBoard extends JFrame{
     }
 
     private void fillLayoutWithButtons() throws IOException{
-        for(int i = 0; i < getGridWidth()*getGridHeight(); i++)
+        for (int i = 0; i < getGridWidth() * getGridHeight(); i++)
             createAndAddNewButton();
     }
 
     private void createAndAddNewButton() throws IOException{
         GameField gameField = new GameField();
         gameField.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
-        gameField.setIcon(new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.UNCOVERED_FIELD)))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH)));
+        gameField.setIcon(new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.UNCOVERED_FIELD))))/*.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH)*/));
         gameField.addMouseListener(new MouseInputAdapter(){
             boolean leftButtonPressed;
             boolean rightButtonPressed;
@@ -111,7 +114,7 @@ public class PlayerBoard extends JFrame{
             public void mouseReleased(MouseEvent e){
                 super.mouseReleased(e);
                 new Thread(() -> {
-                    if(!leftButtonPressed &&!rightButtonPressed)return;
+                    if (!leftButtonPressed && !rightButtonPressed) return;
                     GameField source = (GameField) (e.getSource());
                     int x = source.getLocation().x / source.getBounds().width;
                     int y = source.getLocation().y / source.getBounds().height;
@@ -283,9 +286,9 @@ public class PlayerBoard extends JFrame{
 
 
     public static void main(String[] args){
-        new PlayerBoard(MainMenu.difficulties[MainMenu.INTERMEDIATE][0],
-                MainMenu.difficulties[MainMenu.INTERMEDIATE][1],
-                MainMenu.difficulties[MainMenu.INTERMEDIATE][2],
-                MainMenu.INTERMEDIATE);
+        new PlayerBoard(MainMenu.difficulties[MainMenu.EXPERT][0],
+                MainMenu.difficulties[MainMenu.EXPERT][1],
+                MainMenu.difficulties[MainMenu.EXPERT][2],
+                MainMenu.EXPERT);
     }
 }

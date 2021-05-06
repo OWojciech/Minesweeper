@@ -13,7 +13,7 @@ public class MainMenu extends JMenuBar {
     //                              beginner, intermediate, expert
     static int[][] difficulties = {{9,9,10}, {16,16,40}, {24,24,99}};
     PlayerBoard playerBoard;
-    private int curretnDifficulty;
+    private int currentDifficulty;
     public MainMenu(PlayerBoard playerBoard){
         super();
         this.playerBoard = playerBoard;
@@ -29,7 +29,7 @@ public class MainMenu extends JMenuBar {
     }
 
     public void switchDifficultyFor(int difficultyLevel){
-        curretnDifficulty = difficultyLevel;
+        currentDifficulty = difficultyLevel;
         switch(difficultyLevel){
             case MainMenu.BEGINNER:
                 beginnerLevelMenuItem.setSelected(true);
@@ -66,7 +66,7 @@ public class MainMenu extends JMenuBar {
 
     private void addNewGameMenuItem(){
         newGameMenuItem = new JMenuItem("Nowa gra");
-        newGameMenuItem.addActionListener(e -> switchDifficultyFor(curretnDifficulty));
+        newGameMenuItem.addActionListener(e -> switchDifficultyFor(currentDifficulty));
         gameMenu.add(newGameMenuItem);
     }
 
