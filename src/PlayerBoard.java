@@ -20,13 +20,11 @@ public class PlayerBoard extends JFrame{
     private final int buttonHeight = 30;
     private JPanel gamePanel;
     private JLabel flagsLeftLabel;
+    private Icon unrevealedIcon;
 
     public PlayerBoard(int width, int height, int mines, int difficultyLevel){
-        double start = System.currentTimeMillis();
         setupProperties(height, width, mines);
         setupMainMenu(difficultyLevel);
-        double stop = System.currentTimeMillis();
-        System.out.println("Initialisation took "+ ((stop-start)/1000) +" seconds.");
     }
 
     protected void setupMainMenu(int difficultyLevel){
@@ -91,6 +89,7 @@ public class PlayerBoard extends JFrame{
     }
 
     private void fillLayoutWithButtons() throws IOException{
+        unrevealedIcon = new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.UNCOVERED_FIELD)))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
         for (int i = 0; i < getGridWidth() * getGridHeight(); i++)
             createAndAddNewButton();
     }
@@ -98,7 +97,7 @@ public class PlayerBoard extends JFrame{
     private void createAndAddNewButton() throws IOException{
         GameField gameField = new GameField();
         gameField.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
-        gameField.setIcon(new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.UNCOVERED_FIELD))))/*.getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH)*/));
+        gameField.setIcon(unrevealedIcon);
         gameField.addMouseListener(new MouseInputAdapter(){
             boolean leftButtonPressed;
             boolean rightButtonPressed;
@@ -184,10 +183,16 @@ public class PlayerBoard extends JFrame{
     }
 
     protected void revealAllMines(){
+        ImageIcon mineFieldIcon = null;
+        try {
+            mineFieldIcon = new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.MINE_FIELD)))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (int i = 0; i < board.length; i++){
             for (int j = 0; j < board[i].length; j++){
                 if (realBoard.getBoard()[j][i] != RealBoard.MINE_FIELD) continue;
-                getButtonFromGrid(j, i).setIcon(getCorrespondingIcon(j,i));
+                getButtonFromGrid(j, i).setIcon(mineFieldIcon);
             }
         }
     }
@@ -286,9 +291,9 @@ public class PlayerBoard extends JFrame{
 
 
     public static void main(String[] args){
-        new PlayerBoard(MainMenu.difficulties[MainMenu.EXPERT][0],
-                MainMenu.difficulties[MainMenu.EXPERT][1],
-                MainMenu.difficulties[MainMenu.EXPERT][2],
-                MainMenu.EXPERT);
+        new PlayerBoard(MainMenu.difficulties[MainMenu.INTERMEDIATE][0],
+                MainMenu.difficulties[MainMenu.INTERMEDIATE][1],
+                MainMenu.difficulties[MainMenu.INTERMEDIATE][2],
+                MainMenu.INTERMEDIATE);
     }
 }
