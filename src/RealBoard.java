@@ -42,10 +42,11 @@ public class RealBoard {
         fieldsToClear--;
         if (fieldsToClear == 0)
             JOptionPane.showMessageDialog(new JFrame(),
-                    "Kamil Ossowski to sztos kołpak i wgl");
+                    "Wygrałeś!");
     }
 
     private void showGameBoard() {
+        System.out.println("ŚCIĄGAWKA");
         for (int i = 0; i < board.length; i++){
             for (int j = 0; j < board[i].length; j++){
                 System.out.print(board[j][i]+" ");

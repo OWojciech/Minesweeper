@@ -45,7 +45,7 @@ public class PlayerBoard extends JFrame{
         setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
         setupInformationPanel();
         setupGamePanel();
-        setTitle("Saper, ale w niektórych krajach mówią na to Minesweeper!");
+        setTitle("Saper");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         pack();
@@ -57,7 +57,7 @@ public class PlayerBoard extends JFrame{
         JPanel informationPanel = new JPanel();
         informationPanel.setSize(getGridWidth()*buttonWidth, buttonHeight);
         informationPanel.setBackground(new Color(195,195,195));
-        informationPanel.add(new JLabel("Flags Left:"));
+        informationPanel.add(new JLabel("Pozostało flag:"));
         flagsLeftLabel = new JLabel();
         updateFlagsLeftLabel();
         informationPanel.add(flagsLeftLabel);
@@ -94,11 +94,11 @@ public class PlayerBoard extends JFrame{
             createAndAddNewButton();
     }
 
-    private void createAndAddNewButton() throws IOException{
+    private void createAndAddNewButton(){
         GameField gameField = new GameField();
         gameField.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
         gameField.setIcon(unrevealedIcon);
-        gameField.addMouseListener(new MouseInputAdapter(){
+        gameField.addMouseListener(new MouseInputAdapter() {
             boolean leftButtonPressed;
             boolean rightButtonPressed;
             @Override
@@ -118,13 +118,16 @@ public class PlayerBoard extends JFrame{
                     int x = source.getLocation().x / source.getBounds().width;
                     int y = source.getLocation().y / source.getBounds().height;
 
-                    if(SwingUtilities.isLeftMouseButton(e)&&!SwingUtilities.isRightMouseButton(e))
-                        leftMouseButtonPressed(source, x, y);
-                    if(SwingUtilities.isLeftMouseButton(e)&&SwingUtilities.isRightMouseButton(e))
-                        bothMouseButtonsPressed(x, y);
-                    if(!SwingUtilities.isLeftMouseButton(e)&&SwingUtilities.isRightMouseButton(e))
-                        rightMouseButtonPressed(source, x, y);
-
+                    try {
+                        if (SwingUtilities.isLeftMouseButton(e) && !SwingUtilities.isRightMouseButton(e))
+                            leftMouseButtonPressed(source, x, y);
+                        if (SwingUtilities.isLeftMouseButton(e) && SwingUtilities.isRightMouseButton(e))
+                            bothMouseButtonsPressed(x, y);
+                        if (!SwingUtilities.isLeftMouseButton(e) && SwingUtilities.isRightMouseButton(e))
+                            rightMouseButtonPressed(source, x, y);
+                    }catch (IOException ioe){
+                        ioe.printStackTrace();
+                    }
                     leftButtonPressed =false;
                     rightButtonPressed =false;
                 }).start();
@@ -134,28 +137,27 @@ public class PlayerBoard extends JFrame{
         gamePanel.add(gameField);
     }
 
-    private void leftMouseButtonPressed(GameField source, int x, int y) {
+    private void leftMouseButtonPressed(GameField source, int x, int y) throws IOException{
         if (source.isFlagPlaced() || source.isRevealed()) return;
         if (realBoard.discoverField(x, y) == RealBoard.MINE_FIELD) {
             revealAllMines();
-            JOptionPane.showMessageDialog(new JFrame(),"Przegrałeś, lol :DdddDddddddd");
             return;
         }
         revealEmptyFields(x, y);
     }
 
-    private void bothMouseButtonsPressed(int x, int y) {
+    private void bothMouseButtonsPressed(int x, int y) throws IOException{
         revealSafeMineProximity(x, y);
     }
 
-    private void rightMouseButtonPressed(GameField source, int x, int y) {
+    private void rightMouseButtonPressed(GameField source, int x, int y) throws IOException{
         if (source.isRevealed()) return;
         source.setFlagPlaced(source.isFlagPlaced());
         realBoard.changeFlagState(x, y);
         updateFlagsLeftLabel();
     }
 
-    private void revealSafeMineProximity(int x, int y) {
+    private void revealSafeMineProximity(int x, int y) throws IOException{
         if (realBoard.getBoard()[x][y] <= RealBoard.EMPTY_FIELD && realBoard.getBoard()[x][y] > RealBoard.EIGHT_NEARBY_FIELD) return;
 
         int flagCounter = 0;
@@ -182,13 +184,8 @@ public class PlayerBoard extends JFrame{
         }
     }
 
-    protected void revealAllMines(){
-        ImageIcon mineFieldIcon = null;
-        try {
-            mineFieldIcon = new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.MINE_FIELD)))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void revealAllMines() throws IOException{
+        ImageIcon mineFieldIcon = new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(RealBoard.MINE_FIELD)))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
         for (int i = 0; i < board.length; i++){
             for (int j = 0; j < board[i].length; j++){
                 if (realBoard.getBoard()[j][i] != RealBoard.MINE_FIELD) continue;
@@ -197,7 +194,7 @@ public class PlayerBoard extends JFrame{
         }
     }
 
-    protected void revealEmptyFields(int x, int y){
+    protected void revealEmptyFields(int x, int y) throws IOException{
         if (xIndexInbounds(x) && yIndexInbounds(y) && !getButtonFromGrid(x, y).isRevealed()) {
             revealField(x, y);
             if (realBoard.getBoard()[x][y] == RealBoard.EMPTY_FIELD) {
@@ -213,7 +210,7 @@ public class PlayerBoard extends JFrame{
         }
     }
 
-    private void revealField(int x, int y){
+    private void revealField(int x, int y) throws IOException{
         GameField gameField = getButtonFromGrid(x, y);
         if (gameField == null ) return;
         realBoard.progress();
@@ -221,12 +218,8 @@ public class PlayerBoard extends JFrame{
         gameField.setRevealed(true);
     }
 
-    private Icon getCorrespondingIcon(int x, int y){
-        try {
-            return new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(realBoard.discoverField(x, y))))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
-        }catch(IOException ioe){
-            return null;
-        }
+    private Icon getCorrespondingIcon(int x, int y) throws IOException{
+        return new ImageIcon(ImageIO.read(new File(Objects.requireNonNull(getImagePath(realBoard.discoverField(x, y))))).getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH));
     }
 
     public static String getImagePath(int whichField){
