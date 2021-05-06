@@ -16,8 +16,8 @@ public class PlayerBoard extends JFrame{
     private int[][] board;
     private RealBoard realBoard;
     private int mines;
-    private final int buttonWidth = 30;
-    private final int buttonHeight = 30;
+    private final int buttonWidth = 27;
+    private final int buttonHeight = 27;
     private JPanel gamePanel;
     private JLabel flagsLeftLabel;
     private Icon unrevealedIcon;
@@ -56,7 +56,7 @@ public class PlayerBoard extends JFrame{
     private void setupInformationPanel() {
         JPanel informationPanel = new JPanel();
         informationPanel.setSize(getGridWidth()*buttonWidth, buttonHeight);
-        informationPanel.setBackground(new Color(195,195,195));
+        informationPanel.setBackground(new Color(180,180,180));
         informationPanel.add(new JLabel("Pozostało flag:"));
         flagsLeftLabel = new JLabel();
         updateFlagsLeftLabel();
@@ -225,29 +225,29 @@ public class PlayerBoard extends JFrame{
     public static String getImagePath(int whichField){
         switch(whichField){
             case RealBoard.MINE_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Mine Field.png";
+                return "src\\Images\\Mine Field.png";
             case RealBoard.EMPTY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Empty Field.png";
+                return "src\\Images\\Empty Field.png";
             case RealBoard.ONE_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\One Nearby Field.png";
+                return "src\\Images\\One Nearby Field.png";
             case RealBoard.TWO_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Two Nearby Field.png";
+                return "src\\Images\\Two Nearby Field.png";
             case RealBoard.THREE_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Three Nearby Field.png";
+                return "src\\Images\\Three Nearby Field.png";
             case RealBoard.FOUR_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Four Nearby Field.png";
+                return "src\\Images\\Four Nearby Field.png";
             case RealBoard.FIVE_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Five Nearby Field.png";
+                return "src\\Images\\Five Nearby Field.png";
             case RealBoard.SIX_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Six Nearby Field.png";
+                return "src\\Images\\Six Nearby Field.png";
             case RealBoard.SEVEN_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Seven Nearby Field.png";
+                return "src\\Images\\Seven Nearby Field.png";
             case RealBoard.EIGHT_NEARBY_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Eight Nearby Field.png";
+                return "src\\Images\\Eight Nearby Field.png";
             case RealBoard.SAFETY_FLAG_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Safety Flag Field.png";
+                return "src\\Images\\Safety Flag Field.png";
             case RealBoard.UNCOVERED_FIELD:
-                return "C:\\Users\\Wojtek\\IdeaProjects\\Minesweeper\\src\\Images\\Uncovered Field.png";
+                return "src\\Images\\Uncovered Field.png";
             default:
                 return null;
         }
@@ -284,9 +284,9 @@ public class PlayerBoard extends JFrame{
 
 
     public static void main(String[] args){
-        new PlayerBoard(MainMenu.difficulties[MainMenu.INTERMEDIATE][0],
-                MainMenu.difficulties[MainMenu.INTERMEDIATE][1],
-                MainMenu.difficulties[MainMenu.INTERMEDIATE][2],
-                MainMenu.INTERMEDIATE);
+        new PlayerBoard(MainMenu.difficulties[MainMenu.EXPERT][0],
+                MainMenu.difficulties[MainMenu.EXPERT][1],
+                MainMenu.difficulties[MainMenu.EXPERT][2],
+                MainMenu.EXPERT);
     }
 }
