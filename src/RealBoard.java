@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class RealBoard {
@@ -21,6 +22,7 @@ public class RealBoard {
     final static int EIGHT_NEARBY_FIELD = 8;
     final static int SAFETY_FLAG_FIELD = 9;
     final static int UNCOVERED_FIELD = 10;
+    private ArrayList<Integer> safeIndexList;
 
     public RealBoard(int width, int height, int mines){
         setHeight(height);
@@ -30,8 +32,6 @@ public class RealBoard {
         calculateFieldsToClear();
         setBoard(new int[getWidth()][getHeight()]);
         setFlagPlacement(new boolean[getWidth()][getHeight()]);
-        fillGameBoard();
-        showGameBoard();
     }
 
     private void calculateFieldsToClear(){
@@ -63,9 +63,21 @@ public class RealBoard {
         this.mines = mines;
     }
 
-    private void fillGameBoard() {
+    public void fillGameBoard(int safeX, int safeY) {
+        generateSafeIndexes(safeX, safeY);
         for(int i = getMines(); i > 0; i--){
             GenerateMineFieldAndProximity();
+        }
+        showGameBoard();
+    }
+
+    private void generateSafeIndexes(int safeX, int safeY) {
+        safeIndexList = new ArrayList<>();
+        for (int i = (safeX - 1); i <= (safeX + 1); i++){
+            for (int j = (safeY - 1); j <= (safeY + 1); j++){
+                if (xIndexInbounds(i) && yIndexInbounds(j))
+                    safeIndexList.add(j*height + i);
+            }
         }
     }
 
@@ -81,7 +93,7 @@ public class RealBoard {
         Random rng = new Random();
         int randomX = rng.nextInt(getWidth());
         int randomY = rng.nextInt(getHeight());
-        if (getBoard()[randomX][randomY] == MINE_FIELD)
+        if (getBoard()[randomX][randomY] == MINE_FIELD || safeIndexList.contains((randomY*height+randomX)))
             GenerateMineFieldAndProximity();
         else {
             getBoard()[randomX][randomY] = MINE_FIELD;

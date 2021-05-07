@@ -21,6 +21,7 @@ public class PlayerBoard extends JFrame{
     private JPanel gamePanel;
     private JLabel flagsLeftLabel;
     private Icon unrevealedIcon;
+    private boolean firstClick;
 
     public PlayerBoard(int width, int height, int mines, int difficultyLevel){
         setupProperties(height, width, mines);
@@ -39,6 +40,7 @@ public class PlayerBoard extends JFrame{
         setMines(mines);
         setBoard(new int[getGridWidth()][getGridHeight()]);
         realBoard = new RealBoard(getGridWidth(), getGridHeight(), getMines());
+        firstClick = false;
     }
 
     protected void setupFrame(){
@@ -101,6 +103,7 @@ public class PlayerBoard extends JFrame{
         gameField.addMouseListener(new MouseInputAdapter() {
             boolean leftButtonPressed;
             boolean rightButtonPressed;
+
             @Override
             public void mousePressed(MouseEvent e){
                 if (SwingUtilities.isLeftMouseButton(e))
@@ -117,7 +120,10 @@ public class PlayerBoard extends JFrame{
                     GameField source = (GameField) (e.getSource());
                     int x = source.getLocation().x / source.getBounds().width;
                     int y = source.getLocation().y / source.getBounds().height;
-
+                    if (!firstClick){
+                        realBoard.fillGameBoard(x, y);
+                        firstClick = true;
+                    }
                     try {
                         if (SwingUtilities.isLeftMouseButton(e) && !SwingUtilities.isRightMouseButton(e))
                             leftMouseButtonPressed(source, x, y);
